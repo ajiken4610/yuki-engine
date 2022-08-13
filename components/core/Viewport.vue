@@ -16,8 +16,8 @@ const props = withDefaults(
     renderer?: WebGLRenderer;
     camera?: Camera;
     time: number;
-    loading: boolean;
-    suspensing: boolean;
+    loading?: boolean;
+    suspensing?: boolean;
     topLevel?: boolean;
   }>(),
   {
@@ -35,10 +35,10 @@ const emit = defineEmits<{
   (e: "update:suspensing", val: boolean): void;
   (e: "update:time", val: number): void;
 }>();
-const childSuspensing2D = reactive<boolean[]>(useBooleanArray());
-const childSuspensing3D = reactive<boolean[]>(useBooleanArray());
-const childLoading2D = reactive<boolean[]>(useBooleanArray());
-const childLoading3D = reactive<boolean[]>(useBooleanArray());
+const childSuspensing2D = reactive<boolean[]>([]);
+const childSuspensing3D = reactive<boolean[]>([]);
+const childLoading2D = reactive<boolean[]>([]);
+const childLoading3D = reactive<boolean[]>([]);
 const booleanOr = (input: boolean[]) => {
   let ret = false;
   for (const c of input) {
@@ -61,7 +61,6 @@ watch(
 watch(
   [childLoading2D, childLoading3D],
   () => {
-    console.log(childLoading3D);
     const ret = booleanOr([...childLoading2D, ...childLoading3D]);
     emit("update:loading", ret);
   },
