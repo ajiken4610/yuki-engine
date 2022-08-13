@@ -8,8 +8,8 @@ const props = withDefaults(
     camera: Camera;
     scene: Scene;
     time?: number;
-    loading: boolean;
-    suspensing: boolean;
+    loading?: boolean;
+    suspensing?: boolean;
   }>(),
   {
     time: 0,
@@ -19,6 +19,8 @@ const emit = defineEmits<{
   (e: "update:suspensing", val: boolean);
   (e: "update:loading", val: boolean);
 }>();
+emit("update:suspensing", false);
+emit("update:loading", false);
 watch(toRef(props, "loading"), (val) => {
   if (val) {
     emit("update:loading", false);
