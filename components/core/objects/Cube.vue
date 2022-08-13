@@ -1,7 +1,7 @@
 <template lang="pug">
 CoreObject3D(:renderer="renderer" :camera="camera" :scene="scene" :time="time"
   :suspensing="suspensing" @update:suspensing="$emit('update:suspensing',$event)"
-  :loading="loading" @update:loading="$emit('update:loading',$event)"
+  :loading="loading" @update:loading=""
 )
 </template>
 
@@ -34,10 +34,17 @@ const props = withDefaults(
     sizeZ: 1,
   }
 );
-defineEmits<{
+const emit = defineEmits<{
   (e: "update:suspensing", val: boolean);
   (e: "update:loading", val: boolean);
 }>();
+emit("update:loading", true);
+setTimeout(() => {
+  emit("update:loading", false);
+}, 1000);
+watch(toRef(props, "loading"), (val) => {
+  console.log(val);
+});
 const o = useGLObjects() as {
   material?: Material;
   geometory?: BoxBufferGeometry;

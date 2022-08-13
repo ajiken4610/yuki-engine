@@ -61,10 +61,21 @@ export const finalizeGLObjects = (object: { [key: string]: any }) => {
 };
 
 export const useBooleanArray = () => {
+  let filling = false;
   return new Proxy([] as boolean[], {
     get: (target, prop, receiver) => {
-      if (!target[prop]) {
-        return false;
+      //   if (typeof prop === "string" && prop.match(/^__v_/)) {
+      //     console.log(prop);
+      //     return undefined;
+      //   }
+      if (prop === "filling") {
+        return (val: boolean, start?: number, end?: number) => {
+          filling = true;
+          return target.fill(val, start, end);
+        };
+      }
+      if (target[prop] === undefined) {
+        return (target[prop] = filling);
       }
       return Reflect.get(target, prop, receiver);
     },

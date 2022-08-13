@@ -19,8 +19,6 @@ const emit = defineEmits<{
   (e: "update:suspensing", val: boolean);
   (e: "update:loading", val: boolean);
 }>();
-emit("update:loading", false);
-emit("update:suspensing", false);
 watch(toRef(props, "loading"), (val) => {
   if (val) {
     emit("update:loading", false);
