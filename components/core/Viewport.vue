@@ -65,7 +65,7 @@ watch(
     const ret = booleanOr([...childLoading2D, ...childLoading3D]);
     emit("update:loading", ret);
   },
-  { deep: true, immediate: true }
+  { deep: true }
 );
 
 watch(toRef(props, "suspensing"), (value) => {
@@ -89,13 +89,17 @@ if (props.topLevel) {
     unsubscribe = useRouter().beforeEach((to, from, next) => {
       childSuspensing2D.fill(true);
       childSuspensing3D.fill(true);
-      const unWatch = watch([childSuspensing2D, childSuspensing3D], () => {
-        const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
-        if (!ret) {
-          unWatch();
-          next();
-        }
-      });
+      const unWatch = watch(
+        [childSuspensing2D, childSuspensing3D],
+        () => {
+          const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
+          if (!ret) {
+            unWatch();
+            next();
+          }
+        },
+        { deep: true }
+      );
     });
     const clock = new Clock();
     const render = () => {
