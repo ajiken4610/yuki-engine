@@ -2,35 +2,43 @@
 div
   Teleport(:to="element")
     .fullscreen
-      slot(name="2d" :element="element" :time="time" :suspendings="childSuspending2D")
+      slot(name="2d" :element="element" :time="time" :loadings="childLoading2D" :suspensings="childSuspensing2D")
   .d-none
-    slot(name="3d" :renderer="renderer" :camera="camera" :time="time" :suspengdings="childSuspending3D")
+    slot(name="3d" :renderer="renderer" :camera="camera" :time="time" :loadings="childLoading3D" :suspensings="childSuspensing3D")
 </template>
 
 <script setup lang="ts">
-import { WebGLRenderer, Camera } from "three";
+import { WebGLRenderer, Camera, Clock } from "three";
 const props = withDefaults(
   defineProps<{
     route?: string;
     element?: HTMLElement;
     renderer?: WebGLRenderer;
     camera?: Camera;
-    time?: number;
-    suspending: boolean;
+    time: number;
+    loading: boolean;
+    suspensing: boolean;
     topLevel?: boolean;
   }>(),
   {
     route: "/",
     element: () => document.body,
-    renderer: () => useWebGLRenderer(),
-    camera: () => new Camera(),
+    renderer: useWebGLRenderer,
+    camera: useDefaultCamera,
     time: 0,
-    suspending: false,
+    loading: false,
+    suspensing: false,
   }
 );
-const emit = defineEmits<{ (e: "update:suspending", val: boolean): void }>();
-const childSuspending2D = reactive<boolean[]>([]);
-const childSuspending3D = reactive<boolean[]>([]);
+const emit = defineEmits<{
+  (e: "update:loading", val: boolean): void;
+  (e: "update:suspensing", val: boolean): void;
+  (e: "update:time", val: number): void;
+}>();
+const childSuspensing2D = reactive<boolean[]>(useBooleanArray());
+const childSuspensing3D = reactive<boolean[]>(useBooleanArray());
+const childLoading2D = reactive<boolean[]>(useBooleanArray());
+const childLoading3D = reactive<boolean[]>(useBooleanArray());
 const booleanOr = (input: boolean[]) => {
   let ret = false;
   for (const c of input) {
@@ -41,33 +49,71 @@ const booleanOr = (input: boolean[]) => {
   }
   return ret;
 };
-watch([childSuspending2D, childSuspending3D], () => {
-  const ret = booleanOr([...childSuspending2D, ...childSuspending3D]);
-  emit("update:suspending", ret);
-});
+watch(
+  [childSuspensing2D, childSuspensing3D],
+  () => {
+    const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
+    emit("update:suspensing", ret);
+  },
+  { deep: true }
+);
 
-watch(toRef(props, "suspending"), (value) => {
+watch(
+  [childLoading2D, childLoading3D],
+  () => {
+    console.log(childLoading3D);
+    const ret = booleanOr([...childLoading2D, ...childLoading3D]);
+    emit("update:loading", ret);
+  },
+  { deep: true }
+);
+
+watch(toRef(props, "suspensing"), (value) => {
   if (value) {
-    childSuspending2D.fill(true);
-    childSuspending3D.fill(true);
+    childSuspensing2D.fill(true);
+    childSuspensing3D.fill(true);
+  }
+});
+watch(toRef(props, "loading"), (value) => {
+  if (value) {
+    childLoading2D.fill(true);
+    childLoading3D.fill(true);
   }
 });
 if (props.topLevel) {
   let unsubscribe: () => void;
+  let stopped = false;
   onMounted(() => {
+    childLoading2D.fill(true);
+    childLoading3D.fill(true);
     unsubscribe = useRouter().beforeEach((to, from, next) => {
-      childSuspending2D.fill(true);
-      childSuspending3D.fill(true);
-      const unWatch = watch([childSuspending2D, childSuspending3D], () => {
-        const ret = booleanOr([...childSuspending2D, ...childSuspending3D]);
-        if (!ret) {
-          unWatch();
-          next();
-        }
-      });
+      childSuspensing2D.fill(true);
+      childSuspensing3D.fill(true);
+      const unWatch = watch(
+        [childSuspensing2D, childSuspensing3D],
+        () => {
+          const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
+          if (!ret) {
+            unWatch();
+            next();
+          }
+        },
+        { deep: true }
+      );
     });
+    const clock = new Clock();
+    const render = () => {
+      !stopped && requestAnimationFrame(render);
+      //stopped = true;
+      props.renderer.clear(true, true, true);
+      emit("update:time", clock.getElapsedTime());
+    };
+    render();
   });
-  onUnmounted(unsubscribe);
+  onUnmounted(() => {
+    unsubscribe();
+    stopped = true;
+  });
 }
 </script>
 
