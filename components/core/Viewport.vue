@@ -49,16 +49,24 @@ const booleanOr = (input: boolean[]) => {
   }
   return ret;
 };
-watch([childSuspensing2D, childSuspensing3D], () => {
-  const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
-  emit("update:suspensing", ret);
-});
+watch(
+  [childSuspensing2D, childSuspensing3D],
+  () => {
+    const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
+    emit("update:suspensing", ret);
+  },
+  { deep: true }
+);
 
-watch([childLoading2D, childLoading3D], () => {
-  console.log(childLoading3D);
-  const ret = booleanOr([...childLoading2D, ...childLoading3D]);
-  emit("update:loading", ret);
-});
+watch(
+  [childLoading2D, childLoading3D],
+  () => {
+    console.log(childLoading3D);
+    const ret = booleanOr([...childLoading2D, ...childLoading3D]);
+    emit("update:loading", ret);
+  },
+  { deep: true, immediate: true }
+);
 
 watch(toRef(props, "suspensing"), (value) => {
   if (value) {

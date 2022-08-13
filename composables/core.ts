@@ -64,10 +64,6 @@ export const useBooleanArray = () => {
   let filling = false;
   return new Proxy([] as boolean[], {
     get: (target, prop, receiver) => {
-      //   if (typeof prop === "string" && prop.match(/^__v_/)) {
-      //     console.log(prop);
-      //     return undefined;
-      //   }
       if (prop === "filling") {
         return (val: boolean, start?: number, end?: number) => {
           filling = true;
