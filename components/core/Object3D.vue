@@ -18,10 +18,13 @@ const props = withDefaults(
 const emit = defineEmits<{ (e: "update:suspending", val: boolean) }>();
 emit("update:suspending", false);
 watch(toRef(props, "suspending"), (val) => {
-  console.log(val);
   if (val) {
     emit("update:suspending", false);
   }
+});
+
+watch(toRef(props, "time"), (time) => {
+  props.renderer.render(toRaw(props.scene), props.camera);
 });
 onMounted(() => {});
 onUnmounted(() => {});

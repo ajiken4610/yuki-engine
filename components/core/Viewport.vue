@@ -8,27 +8,30 @@ div
 </template>
 
 <script setup lang="ts">
-import { WebGLRenderer, Camera } from "three";
+import { WebGLRenderer, Camera, Clock, PerspectiveCamera } from "three";
 const props = withDefaults(
   defineProps<{
     route?: string;
     element?: HTMLElement;
     renderer?: WebGLRenderer;
     camera?: Camera;
-    time?: number;
+    time: number;
     suspending: boolean;
     topLevel?: boolean;
   }>(),
   {
     route: "/",
     element: () => document.body,
-    renderer: () => useWebGLRenderer(),
-    camera: () => new Camera(),
+    renderer: useWebGLRenderer,
+    camera: useDefaultCamera,
     time: 0,
     suspending: false,
   }
 );
-const emit = defineEmits<{ (e: "update:suspending", val: boolean): void }>();
+const emit = defineEmits<{
+  (e: "update:suspending", val: boolean): void;
+  (e: "update:time", val: number): void;
+}>();
 const childSuspending2D = reactive<boolean[]>([]);
 const childSuspending3D = reactive<boolean[]>([]);
 const booleanOr = (input: boolean[]) => {
@@ -54,6 +57,7 @@ watch(toRef(props, "suspending"), (value) => {
 });
 if (props.topLevel) {
   let unsubscribe: () => void;
+  let stopped = false;
   onMounted(() => {
     unsubscribe = useRouter().beforeEach((to, from, next) => {
       childSuspending2D.fill(true);
@@ -66,8 +70,18 @@ if (props.topLevel) {
         }
       });
     });
+    const clock = new Clock();
+    const render = () => {
+      !stopped && requestAnimationFrame(render);
+      props.renderer.clear(true, true, true);
+      emit("update:time", clock.getElapsedTime());
+    };
+    render();
   });
-  onUnmounted(() => unsubscribe());
+  onUnmounted(() => {
+    unsubscribe();
+    stopped = true;
+  });
 }
 </script>
 
