@@ -1,6 +1,4 @@
 import { PerspectiveCamera, WebGLRenderer } from "three";
-import { createRenderer } from "vue";
-
 const renderer = new WebGLRenderer();
 renderer.autoClear = false;
 renderer.setClearAlpha(0);
@@ -60,6 +58,17 @@ export const finalizeGLObjects = (object: { [key: string]: any }) => {
       object[key].dispose();
     }
   }
+};
+
+export const useBooleanArray = () => {
+  return new Proxy([] as boolean[], {
+    get: (target, prop, receiver) => {
+      if (!target[prop]) {
+        return false;
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+  });
 };
 
 const onResize = () => {

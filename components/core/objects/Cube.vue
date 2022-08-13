@@ -1,5 +1,8 @@
 <template lang="pug">
-CoreObject3D(:renderer="renderer" :camera="camera" :scene="scene" :time="time" :suspending="suspending" @update:suspending="$emit('update:suspending',$event)")
+CoreObject3D(:renderer="renderer" :camera="camera" :scene="scene" :time="time"
+  :suspensing="suspensing" @update:suspensing="$emit('update:suspensing',$event)"
+  :loading="loading" @update:loading="$emit('update:loading',$event)"
+)
 </template>
 
 <script setup lang="ts">
@@ -18,20 +21,23 @@ const props = withDefaults(
     renderer: WebGLRenderer;
     camera: Camera;
     time?: number;
-    suspending: boolean;
+    suspensing: boolean;
+    loading: boolean;
     sizeX?: number;
     sizeY?: number;
     sizeZ?: number;
   }>(),
   {
     time: 0,
-    suspending: false,
     sizeX: 1,
     sizeY: 1,
     sizeZ: 1,
   }
 );
-defineEmits<{ (e: "update:suspending", val: boolean) }>();
+defineEmits<{
+  (e: "update:suspensing", val: boolean);
+  (e: "update:loading", val: boolean);
+}>();
 const o = useGLObjects() as {
   material?: Material;
   geometory?: BoxBufferGeometry;
