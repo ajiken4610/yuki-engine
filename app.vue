@@ -4,7 +4,7 @@ div
 </template>
 
 <script setup lang="ts">
-initCore();
+// initCore();
 </script>
 
 <style lang="scss">

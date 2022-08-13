@@ -4,7 +4,7 @@ div
     .fullscreen
       slot(name="2d" :element="element" :time="time" :suspendings="childSuspending2D")
   .d-none
-    slot(name="3d" :renderer="renderer" :camera="camera" :time="time" :suspengdings="childSuspending3D")
+    slot(name="3d" :renderer="renderer" :camera="camera" :time="time" :suspendings="childSuspending3D")
 </template>
 
 <script setup lang="ts">
@@ -67,7 +67,7 @@ if (props.topLevel) {
       });
     });
   });
-  onUnmounted(unsubscribe);
+  onUnmounted(() => unsubscribe());
 }
 </script>
 
