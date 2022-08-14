@@ -1,7 +1,7 @@
 <template lang="pug">
 CoreObject3D(
   v-bind="$props",
-  v-on="useEmitExtender($emit, ['update:loading', 'update:suspending'])",
+  v-on="useEmitExtender($emit, ['update:loading', 'update:suspending','update:needsUpdate'])",
   :scene="scene"
 )
 </template>
@@ -18,15 +18,16 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    size?: Vector3;
+    material?: Material;
   }>(),
   {
-    size: () => new Vector3(1, 1, 1),
+    material: () => new MeshNormalMaterial(),
   }
 );
 defineEmits<{
   (e: "update:suspending", val: boolean);
   (e: "update:loading", val: boolean);
+  (e: "update:needsUpdate", val: boolean);
 }>();
 const o = useGLObjects() as {
   material?: Material;
@@ -34,11 +35,15 @@ const o = useGLObjects() as {
   mesh?: Mesh;
 };
 const scene = ref(new Scene());
-o.material = new MeshNormalMaterial();
-o.geometory = new BoxBufferGeometry(props.size.x, props.size.y, props.size.z);
+o.material = props.material;
+o.geometory = new BoxBufferGeometry(1, 1, 1);
 o.mesh = new Mesh(o.geometory, o.material);
 scene.value.add(o.mesh);
 onUnmounted(() => {
   finalizeGLObjects(o);
+});
+watch(toRef(props, "material"), () => {
+  o.material = props.material;
+  o.mesh.material = o.material;
 });
 </script>

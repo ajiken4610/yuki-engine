@@ -13,6 +13,7 @@ div
         :rotation="rotation",
         v-model:loading="loadings[0]",
         v-model:suspending="suspendings[0]"
+        v-model:needsUpdate="needsUpdate"
       )
 </template>
 
@@ -28,10 +29,12 @@ const camera = ref(
 camera.value.position.set(2, 2, 2);
 camera.value.lookAt(0, 0, 0);
 
+const needsUpdate = ref(false);
 const position = new Vector3(0, 0, 0);
 const rotation = new Euler(0, 0, 0);
 watch(time, () => {
   position.set(Math.sin(time.value), 0, Math.cos(time.value));
   rotation.set(time.value * 1, time.value * 2, time.value * 3);
+  needsUpdate.value = true;
 });
 </script>
