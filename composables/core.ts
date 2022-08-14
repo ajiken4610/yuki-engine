@@ -60,6 +60,16 @@ export const finalizeGLObjects = (object: { [key: string]: any }) => {
   }
 };
 
+export const useEmitExtender = (
+  emit: (e: string, ...args) => unknown,
+  names: string[]
+) => {
+  const ret: { [x: string]: (e: string, ...arg: unknown[]) => unknown } = {};
+  for (const name of names) {
+    ret[name] = (...args) => emit(name, ...args);
+  }
+  return ret;
+};
 // export const useBooleanArray = () => {
 //   let filling = false;
 //   return new Proxy([] as boolean[], {

@@ -1,37 +1,30 @@
 <template lang="pug">
-CoreObject3D(v-bind="$props" :scene="scene" @update:suspensing="$emit('update:suspensing',$event)" @update:loading="$emit('update:loading',$event)")
+CoreObject3D(
+  v-bind="$props",
+  v-on="useEmitExtender($emit, ['update:loading', 'update:suspensing'])",
+  :scene="scene"
+)
 </template>
 
 <script setup lang="ts">
 import {
   BoxBufferGeometry,
-  Camera,
   Material,
   Mesh,
   MeshNormalMaterial,
   Scene,
-  WebGLRenderer,
+  Vector3,
 } from "three";
 
 const props = withDefaults(
   defineProps<{
-    renderer: WebGLRenderer;
-    camera: Camera;
-    time?: number;
-    suspensing?: boolean;
-    loading?: boolean;
-    sizeX?: number;
-    sizeY?: number;
-    sizeZ?: number;
+    size?: Vector3;
   }>(),
   {
-    time: 0,
-    sizeX: 1,
-    sizeY: 1,
-    sizeZ: 1,
+    size: () => new Vector3(1, 1, 1),
   }
 );
-const emit = defineEmits<{
+defineEmits<{
   (e: "update:suspensing", val: boolean);
   (e: "update:loading", val: boolean);
 }>();
@@ -42,7 +35,7 @@ const o = useGLObjects() as {
 };
 const scene = ref(new Scene());
 o.material = new MeshNormalMaterial();
-o.geometory = new BoxBufferGeometry(props.sizeX, props.sizeY, props.sizeZ);
+o.geometory = new BoxBufferGeometry(props.size.x, props.size.y, props.size.z);
 o.mesh = new Mesh(o.geometory, o.material);
 scene.value.add(o.mesh);
 onUnmounted(() => {

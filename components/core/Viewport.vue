@@ -2,9 +2,22 @@
 div
   Teleport(:to="element")
     .fullscreen
-      slot(name="2d" :element="element" :time="time" :loadings="childLoading2D" :suspensings="childSuspensing2D")
+      slot(
+        name="2d",
+        :element="element",
+        :time="time",
+        :loadings="childLoading2D",
+        :suspensings="childSuspensing2D"
+      )
   .d-none
-    slot(name="3d" :renderer="renderer" :camera="camera" :time="time" :loadings="childLoading3D" :suspensings="childSuspensing3D")
+    slot(
+      name="3d",
+      :renderer="renderer",
+      :camera="camera",
+      :time="time",
+      :loadings="childLoading3D",
+      :suspensings="childSuspensing3D"
+    )
 </template>
 
 <script setup lang="ts">
@@ -35,6 +48,10 @@ const emit = defineEmits<{
   (e: "update:suspensing", val: boolean): void;
   (e: "update:time", val: number): void;
 }>();
+provide("element", toRef(props, "element"));
+provide("renderer", toRef(props, "renderer"));
+provide("camera", toRef(props, "camera"));
+provide("time", toRef(props, "time"));
 const childSuspensing2D = reactive<boolean[]>([]);
 const childSuspensing3D = reactive<boolean[]>([]);
 const childLoading2D = reactive<boolean[]>([]);
