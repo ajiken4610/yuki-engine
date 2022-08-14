@@ -35,6 +35,10 @@ const emit = defineEmits<{
   (e: "update:suspensing", val: boolean): void;
   (e: "update:time", val: number): void;
 }>();
+provide("element", props.element);
+provide("renderer", props.renderer);
+provide("camera", props.camera);
+provide("time", props.time);
 const childSuspensing2D = reactive<boolean[]>([]);
 const childSuspensing3D = reactive<boolean[]>([]);
 const childLoading2D = reactive<boolean[]>([]);
