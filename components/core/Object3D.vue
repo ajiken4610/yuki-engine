@@ -39,20 +39,31 @@ watch(toRef(props, "suspensing"), (val) => {
     emit("update:suspensing", false);
   }
 });
-
+const lastPosition = new Vector3(0, 0, 0);
+const lastRotation = new Euler(0, 0, 0);
+const lastScale = new Vector3(1, 1, 1);
 watch(toRef(props, "time"), () => {
-  props.scene.position.set(
-    props.position.x,
-    props.position.y,
-    props.position.z
-  );
-  props.scene.rotation.set(
-    props.rotation.x,
-    props.rotation.y,
-    props.rotation.z,
-    props.rotation.order
-  );
-  props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
+  if (!lastPosition.equals(props.position)) {
+    props.scene.position.set(
+      props.position.x,
+      props.position.y,
+      props.position.z
+    );
+    lastPosition.copy(props.position);
+  }
+  if (!lastRotation.equals(props.rotation)) {
+    props.scene.rotation.set(
+      props.rotation.x,
+      props.rotation.y,
+      props.rotation.z,
+      props.rotation.order
+    );
+    lastRotation.copy(props.rotation);
+  }
+  if (!lastScale.equals(props.scale)) {
+    props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
+    lastScale.copy(props.scale);
+  }
   unref(props.renderer).render(toRaw(unref(props.scene)), unref(props.camera));
 });
 onMounted(() => {});
