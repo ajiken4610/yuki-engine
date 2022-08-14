@@ -2,17 +2,17 @@
 div
   CoreViewport(
     v-model:loading="loading",
-    v-model:suspensing="suspensing",
+    v-model:suspending="suspending",
     :topLevel="true",
     v-model:time="time",
     :camera="camera"
   )
-    template(#3d="{ loadings, suspensings }")
+    template(#3d="{ loadings, suspendings }")
       CoreObjectsCube(
         :position="position",
         :rotation="rotation",
         v-model:loading="loadings[0]",
-        v-model:suspensing="suspensings[0]"
+        v-model:suspending="suspendings[0]"
       )
 </template>
 
@@ -20,7 +20,7 @@ div
 import { Euler, PerspectiveCamera, Vector3 } from "three";
 
 const loading = ref(false);
-const suspensing = ref(false);
+const suspending = ref(false);
 const time = ref(0);
 const camera = ref(
   new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10)

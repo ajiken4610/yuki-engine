@@ -7,7 +7,7 @@ div
         :element="element",
         :time="time",
         :loadings="childLoading2D",
-        :suspensings="childSuspensing2D"
+        :suspendings="childSuspending2D"
       )
   .d-none
     slot(
@@ -16,7 +16,7 @@ div
       :camera="camera",
       :time="time",
       :loadings="childLoading3D",
-      :suspensings="childSuspensing3D"
+      :suspendings="childSuspending3D"
     )
 </template>
 
@@ -30,7 +30,7 @@ const props = withDefaults(
     camera?: Camera;
     time: number;
     loading?: boolean;
-    suspensing?: boolean;
+    suspending?: boolean;
     topLevel?: boolean;
   }>(),
   {
@@ -40,20 +40,20 @@ const props = withDefaults(
     camera: useDefaultCamera,
     time: 0,
     loading: false,
-    suspensing: false,
+    suspending: false,
   }
 );
 const emit = defineEmits<{
   (e: "update:loading", val: boolean): void;
-  (e: "update:suspensing", val: boolean): void;
+  (e: "update:suspending", val: boolean): void;
   (e: "update:time", val: number): void;
 }>();
 provide("element", toRef(props, "element"));
 provide("renderer", toRef(props, "renderer"));
 provide("camera", toRef(props, "camera"));
 provide("time", toRef(props, "time"));
-const childSuspensing2D = reactive<boolean[]>([]);
-const childSuspensing3D = reactive<boolean[]>([]);
+const childSuspending2D = reactive<boolean[]>([]);
+const childSuspending3D = reactive<boolean[]>([]);
 const childLoading2D = reactive<boolean[]>([]);
 const childLoading3D = reactive<boolean[]>([]);
 const booleanOr = (input: boolean[]) => {
@@ -67,10 +67,10 @@ const booleanOr = (input: boolean[]) => {
   return ret;
 };
 watch(
-  [childSuspensing2D, childSuspensing3D],
+  [childSuspending2D, childSuspending3D],
   () => {
-    const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
-    emit("update:suspensing", ret);
+    const ret = booleanOr([...childSuspending2D, ...childSuspending3D]);
+    emit("update:suspending", ret);
   },
   { deep: true }
 );
@@ -84,10 +84,10 @@ watch(
   { deep: true }
 );
 
-watch(toRef(props, "suspensing"), (value) => {
+watch(toRef(props, "suspending"), (value) => {
   if (value) {
-    childSuspensing2D.fill(true);
-    childSuspensing3D.fill(true);
+    childSuspending2D.fill(true);
+    childSuspending3D.fill(true);
   }
 });
 watch(toRef(props, "loading"), (value) => {
@@ -103,12 +103,12 @@ if (props.topLevel) {
     childLoading2D.fill(true);
     childLoading3D.fill(true);
     unsubscribe = useRouter().beforeEach((to, from, next) => {
-      childSuspensing2D.fill(true);
-      childSuspensing3D.fill(true);
+      childSuspending2D.fill(true);
+      childSuspending3D.fill(true);
       const unWatch = watch(
-        [childSuspensing2D, childSuspensing3D],
+        [childSuspending2D, childSuspending3D],
         () => {
-          const ret = booleanOr([...childSuspensing2D, ...childSuspensing3D]);
+          const ret = booleanOr([...childSuspending2D, ...childSuspending3D]);
           if (!ret) {
             unWatch();
             next();

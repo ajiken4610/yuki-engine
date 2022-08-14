@@ -1,7 +1,7 @@
 <template lang="pug">
 CoreObject3D(
   v-bind="$props",
-  v-on="useEmitExtender($emit, ['update:loading', 'update:suspensing'])",
+  v-on="useEmitExtender($emit, ['update:loading', 'update:suspending'])",
   :scene="scene"
 )
 </template>
@@ -25,7 +25,7 @@ const props = withDefaults(
   }
 );
 defineEmits<{
-  (e: "update:suspensing", val: boolean);
+  (e: "update:suspending", val: boolean);
   (e: "update:loading", val: boolean);
 }>();
 const o = useGLObjects() as {

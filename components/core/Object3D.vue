@@ -12,7 +12,7 @@ const props = withDefaults(
     scale?: Vector3;
     time?: number | { value: number };
     loading?: boolean;
-    suspensing?: boolean;
+    suspending?: boolean;
   }>(),
   {
     renderer: () => inject("renderer"),
@@ -24,19 +24,19 @@ const props = withDefaults(
   }
 );
 const emit = defineEmits<{
-  (e: "update:suspensing", val: boolean);
+  (e: "update:suspending", val: boolean);
   (e: "update:loading", val: boolean);
 }>();
-emit("update:suspensing", false);
+emit("update:suspending", false);
 emit("update:loading", false);
 watch(toRef(props, "loading"), (val) => {
   if (val) {
     emit("update:loading", false);
   }
 });
-watch(toRef(props, "suspensing"), (val) => {
+watch(toRef(props, "suspending"), (val) => {
   if (val) {
-    emit("update:suspensing", false);
+    emit("update:suspending", false);
   }
 });
 const lastPosition = new Vector3(0, 0, 0);
