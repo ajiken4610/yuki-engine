@@ -13,6 +13,7 @@ const props = withDefaults(
     time?: number | { value: number };
     loading?: boolean;
     suspending?: boolean;
+    needsUpdate?: boolean;
   }>(),
   {
     renderer: () => inject("renderer"),
@@ -26,6 +27,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: "update:suspending", val: boolean);
   (e: "update:loading", val: boolean);
+  (e: "update:needsUpdate", val: boolean);
 }>();
 emit("update:suspending", false);
 emit("update:loading", false);
@@ -39,30 +41,22 @@ watch(toRef(props, "suspending"), (val) => {
     emit("update:suspending", false);
   }
 });
-const lastPosition = new Vector3(0, 0, 0);
-const lastRotation = new Euler(0, 0, 0);
-const lastScale = new Vector3(1, 1, 1);
+
 watch(toRef(props, "time"), () => {
-  if (!lastPosition.equals(props.position)) {
+  if (props.needsUpdate) {
     props.scene.position.set(
       props.position.x,
       props.position.y,
       props.position.z
     );
-    lastPosition.copy(props.position);
-  }
-  if (!lastRotation.equals(props.rotation)) {
     props.scene.rotation.set(
       props.rotation.x,
       props.rotation.y,
       props.rotation.z,
       props.rotation.order
     );
-    lastRotation.copy(props.rotation);
-  }
-  if (!lastScale.equals(props.scale)) {
     props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
-    lastScale.copy(props.scale);
+    emit("update:needsUpdate", false);
   }
   unref(props.renderer).render(toRaw(unref(props.scene)), unref(props.camera));
 });
