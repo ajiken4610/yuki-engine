@@ -1,8 +1,5 @@
 <template lang="pug">
-CoreObject3D(:renderer="renderer" :camera="camera" :scene="scene" :time="time"
-  :suspensing="suspensing" @update:suspensing="$emit('update:suspensing',$event)"
-  :loading="loading" @update:loading="$emit('update:loading',$event)"
-)
+CoreObject3D(v-bind="$props" :scene="scene" @update:suspensing="$emit('update:suspensing',$event)" @update:loading="$emit('update:loading',$event)")
 </template>
 
 <script setup lang="ts">

@@ -2,7 +2,7 @@
 div
   CoreViewport(v-model:loading="loading" v-model:suspensing="suspensing" :topLevel="true" v-model:time="time")
     template(#3d="{renderer,camera,time,loadings,suspensings}")
-      CoreObjectsCube(:renderer="renderer" :camera="camera" :time="time" v-model:loading="loadings[0]" v-model:suspensing="suspensings[0]")
+      CoreObjectsCube(v-bind="{renderer,camera,time}" v-model:loading="loadings[0]" v-model:suspensing="suspensings[0]")
 </template>
 
 <script setup lang="ts">
