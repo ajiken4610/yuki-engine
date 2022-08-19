@@ -25,8 +25,8 @@ const props = withDefaults(
   }
 );
 defineEmits<{
-  (e: "update:suspending", val: boolean);
-  (e: "update:loading", val: boolean);
+  (e: "update:suspending", val: number);
+  (e: "update:loading", val: number);
   (e: "update:needsUpdate", val: boolean);
 }>();
 const o = useGLObjects() as {
