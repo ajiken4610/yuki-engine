@@ -1,6 +1,6 @@
 <template></template>
 <script setup lang="ts">
-import { Camera, Euler, Scene, Vector3, WebGLRenderer } from "three";
+import { Camera, Euler, Matrix4, Scene, Vector3, WebGLRenderer } from "three";
 
 const props = withDefaults(
   defineProps<{
@@ -45,37 +45,25 @@ watch(toRef(props, "suspending"), (val) => {
     }, 1000);
   }
 });
-
-const injectedPosition =
-  inject<{ value: Vector3 }>("position", null) || ref(new Vector3(0, 0, 0));
-const injectedRotation =
-  inject<{ value: Euler }>("rotation", null) || ref(new Euler(0, 0, 0));
-const injectedScale =
-  inject<{ value: Vector3 }>("scale", null) || ref(new Vector3(1, 1, 1));
-const injectedNeedsUpdate = inject("needsUpdate", null) || ref(false);
 const updateMatrix = () => {
   props.scene.position.set(
-    props.position.x + injectedPosition.value.x,
-    props.position.y + injectedPosition.value.y,
-    props.position.z + injectedPosition.value.z
+    props.position.x,
+    props.position.y,
+    props.position.z
   );
   props.scene.rotation.set(
-    props.rotation.x + injectedRotation.value.x,
-    props.rotation.y + injectedRotation.value.y,
-    props.rotation.z + injectedRotation.value.z,
+    props.rotation.x,
+    props.rotation.y,
+    props.rotation.z,
     props.rotation.order
   );
-  props.scene.scale.set(
-    props.scale.x * injectedScale.value.x,
-    props.scale.y * injectedScale.value.y,
-    props.scale.z * injectedScale.value.z
-  );
+  props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
+  props.scene.matrixWorldNeedsUpdate = true;
   emit("update:needsUpdate", false);
-  injectedNeedsUpdate.value = false;
 };
 
 watch(time, () => {
-  if (props.needsUpdate || injectedNeedsUpdate.value) {
+  if (props.needsUpdate) {
     updateMatrix();
   }
   renderer.value.render(toRaw(props.scene), camera.value);
