@@ -99,8 +99,8 @@ watch(toRef(props, "loading"), (value) => {
   }
 });
 
-const objectCounts: number[] = [];
-const loadingCounts: number[] = [];
+const objectCounts = reactive<number[]>([]);
+const loadingCounts = reactive<number[]>([]);
 watch(
   [objectCounts, childLoading],
   () => {
