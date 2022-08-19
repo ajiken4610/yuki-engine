@@ -3,6 +3,8 @@ div
   CoreViewport(
     v-model:loading="loading",
     v-model:suspending="suspending",
+    v-model:objectCount="objectCount",
+    v-model:loadingCount="loadingCount",
     :topLevel="true",
     v-model:time="time",
     :camera="camera"
@@ -12,9 +14,10 @@ div
         :position="position",
         :rotation="rotation",
         v-model:loading="loadings[0]",
-        v-model:suspending="suspendings[0]"
+        v-model:suspending="suspendings[0]",
         v-model:needsUpdate="needsUpdate"
       )
+    template(#2d) {{ loading }},{{ suspending }},{{ loadingCount }}/{{ objectCount }}
 </template>
 
 <script setup lang="ts">
@@ -22,6 +25,8 @@ import { Euler, PerspectiveCamera, Vector3 } from "three";
 
 const loading = ref(false);
 const suspending = ref(false);
+const objectCount = ref(0);
+const loadingCount = ref(0);
 const time = ref(0);
 const camera = ref(
   new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10)
