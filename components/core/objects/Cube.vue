@@ -1,7 +1,7 @@
 <template lang="pug">
 CoreObject3D(
   v-bind="$props",
-  v-on="useEmitExtender($emit, ['loading', 'suspending', 'needsUpdate'])",
+  v-on="useUpdateExtender($emit, ['loading', 'suspending', 'needsUpdate'])",
   :scene="scene"
 )
 </template>
