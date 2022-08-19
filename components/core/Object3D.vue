@@ -10,6 +10,7 @@ const props = withDefaults(
     scale?: Vector3;
     loading?: number;
     suspending?: number;
+    objectCount?: number;
     needsUpdate?: boolean;
   }>(),
   {
@@ -24,18 +25,24 @@ const time = inject<{ value: number }>("time");
 const emit = defineEmits<{
   (e: "update:suspending", val: number);
   (e: "update:loading", val: number);
+  (e: "update:objectCount", val: number);
   (e: "update:needsUpdate", val: boolean);
 }>();
 emit("update:suspending", 0);
 emit("update:loading", 0);
+emit("update:objectCount", 1);
 watch(toRef(props, "loading"), (val) => {
   if (val === -1) {
-    emit("update:loading", 0);
+    setTimeout(() => {
+      emit("update:loading", 0);
+    }, 1000);
   }
 });
 watch(toRef(props, "suspending"), (val) => {
   if (val === -1) {
-    emit("update:suspending", 0);
+    setTimeout(() => {
+      emit("update:suspending", 0);
+    }, 1000);
   }
 });
 

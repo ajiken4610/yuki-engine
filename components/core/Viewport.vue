@@ -7,14 +7,16 @@ div
         :element="element",
         :time="time",
         :loadings="loadings",
-        :suspendings="suspendings"
+        :suspendings="suspendings",
+        :objectCounts="objectCounts"
       )
   .d-none
     slot(
       name="3d",
       :time="time",
       :loadings="loadings",
-      :suspendings="suspendings"
+      :suspendings="suspendings",
+      :objectCounts="objectCounts"
     )
 </template>
 
@@ -96,7 +98,8 @@ if (props.topLevel) {
         suspendings,
         () => {
           let ret = 0;
-          loadings.forEach((value) => (ret += value));
+          suspendings.forEach((value) => (ret += value));
+          emit("update:suspending", ret);
           if (ret === 0) {
             unWatch();
             next();
