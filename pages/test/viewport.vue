@@ -17,6 +17,7 @@ div
         v-model:suspending="suspendings[0]",
         v-model:needsUpdate="needsUpdate"
       )
+    template(#2d) {{ loading }},{{ suspending }},{{ loadingCount }}/{{ objectCount }}
 </template>
 
 <script setup lang="ts">

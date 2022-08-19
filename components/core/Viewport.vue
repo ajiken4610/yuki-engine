@@ -102,7 +102,7 @@ watch(toRef(props, "loading"), (value) => {
 const objectCounts: number[] = [];
 const loadingCounts: number[] = [];
 watch(
-  objectCounts,
+  [objectCounts, childLoading],
   () => {
     let ret = 0;
     childLoading.forEach(() => ret++);
@@ -112,7 +112,7 @@ watch(
   { deep: true }
 );
 watch(
-  loadingCounts,
+  [loadingCounts, childLoading],
   () => {
     let ret = 0;
     childLoading.forEach((value) => value && ret++);
