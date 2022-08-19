@@ -60,13 +60,14 @@ export const finalizeGLObjects = (object: { [key: string]: any }) => {
   }
 };
 
-export const useEmitExtender = (
+export const useUpdateExtender = (
   emit: (e: string, ...args) => unknown,
   names: string[]
 ) => {
   const ret: { [x: string]: (e: string, ...arg: unknown[]) => unknown } = {};
   for (const name of names) {
-    ret[name] = (...args) => emit(name, ...args);
+    const updateName = "update:" + name;
+    ret[updateName] = (...args) => emit(updateName, ...args);
   }
   return ret;
 };
