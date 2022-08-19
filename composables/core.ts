@@ -66,7 +66,8 @@ export const useEmitExtender = (
 ) => {
   const ret: { [x: string]: (e: string, ...arg: unknown[]) => unknown } = {};
   for (const name of names) {
-    ret[name] = (...args) => emit(name, ...args);
+    const updateName = "update:" + name;
+    ret[updateName] = (...args) => emit(updateName, ...args);
   }
   return ret;
 };
