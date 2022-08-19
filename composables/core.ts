@@ -1,7 +1,8 @@
-import { PerspectiveCamera, WebGLRenderer } from "three";
+import { Object3D, PerspectiveCamera, WebGLRenderer } from "three";
 const renderer = new WebGLRenderer();
 renderer.autoClear = false;
 renderer.setClearAlpha(0);
+Object3D.DefaultMatrixAutoUpdate = false;
 export const useWebGLRenderer = () => renderer;
 export const useDefaultCamera = () => {
   const ret = new PerspectiveCamera(
