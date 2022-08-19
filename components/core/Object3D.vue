@@ -58,9 +58,10 @@ const updateMatrix = () => {
     props.rotation.order
   );
   props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
+  props.scene.updateMatrix();
   emit("update:needsUpdate", false);
 };
-
+console.log(camera.value);
 watch(time, () => {
   if (props.needsUpdate) {
     updateMatrix();

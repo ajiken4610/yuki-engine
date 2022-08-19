@@ -31,6 +31,7 @@ const time = ref(0);
 const camera = ref(
   new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10)
 );
+camera.value.matrixAutoUpdate = true;
 camera.value.position.set(2, 2, 2);
 camera.value.lookAt(0, 0, 0);
 
