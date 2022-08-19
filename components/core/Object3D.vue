@@ -45,6 +45,13 @@ watch(toRef(props, "suspending"), (val) => {
     }, 1000);
   }
 });
+
+const injectedPosition =
+  inject<{ value: Vector3 }>("position", null) || ref(new Vector3(0, 0, 0));
+const injectedRotation =
+  inject<{ value: Euler }>("rotation", null) || ref(new Euler(0, 0, 0));
+const injectedScale =
+  inject<{ value: Vector3 }>("scale", null) || ref(new Vector3(1, 1, 1));
 const updateMatrix = () => {
   props.scene.position.set(
     props.position.x,
