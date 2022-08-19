@@ -45,22 +45,25 @@ watch(toRef(props, "suspending"), (val) => {
     }, 1000);
   }
 });
+const updateMatrix = () => {
+  props.scene.position.set(
+    props.position.x,
+    props.position.y,
+    props.position.z
+  );
+  props.scene.rotation.set(
+    props.rotation.x,
+    props.rotation.y,
+    props.rotation.z,
+    props.rotation.order
+  );
+  props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
+  emit("update:needsUpdate", false);
+};
 
 watch(time, () => {
   if (props.needsUpdate) {
-    props.scene.position.set(
-      props.position.x,
-      props.position.y,
-      props.position.z
-    );
-    props.scene.rotation.set(
-      props.rotation.x,
-      props.rotation.y,
-      props.rotation.z,
-      props.rotation.order
-    );
-    props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
-    emit("update:needsUpdate", false);
+    updateMatrix();
   }
   renderer.value.render(toRaw(props.scene), camera.value);
 });
