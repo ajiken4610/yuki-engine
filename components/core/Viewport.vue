@@ -87,6 +87,16 @@ watch(
   { deep: true }
 );
 
+watch(
+  suspendings,
+  () => {
+    let ret = 0;
+    suspendings.forEach((value) => (ret += value));
+    emit("update:suspending", ret);
+  },
+  { deep: true }
+);
+
 if (props.topLevel) {
   let unsubscribe: () => void;
   let stopped = false;
@@ -94,19 +104,13 @@ if (props.topLevel) {
     loadings.fill(-1);
     unsubscribe = useRouter().beforeEach((to, from, next) => {
       suspendings.fill(-1);
-      const unWatch = watch(
-        suspendings,
-        () => {
-          let ret = 0;
-          suspendings.forEach((value) => (ret += value));
-          emit("update:suspending", ret);
-          if (ret === 0) {
-            unWatch();
-            next();
-          }
-        },
-        { deep: true }
-      );
+      const unWatch = watch(toRef(props, "suspending"), () => {
+        const ret = props.suspending;
+        if (ret === 0) {
+          unWatch();
+          next();
+        }
+      });
     });
     const clock = new Clock();
     const render = () => {
