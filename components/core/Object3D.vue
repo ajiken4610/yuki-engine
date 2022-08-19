@@ -58,7 +58,6 @@ const updateMatrix = () => {
     props.rotation.order
   );
   props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
-  props.scene.matrixWorldNeedsUpdate = true;
   emit("update:needsUpdate", false);
 };
 
