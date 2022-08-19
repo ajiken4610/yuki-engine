@@ -81,7 +81,9 @@ watch(
   loadings,
   () => {
     let ret = 0;
-    loadings.forEach((value) => (ret += value));
+    loadings.forEach(
+      (value, i) => (ret += value === -1 ? objectCounts[i] : value)
+    );
     emit("update:loading", ret);
   },
   { deep: true }
@@ -91,7 +93,9 @@ watch(
   suspendings,
   () => {
     let ret = 0;
-    suspendings.forEach((value) => (ret += value));
+    suspendings.forEach(
+      (value, i) => (ret += value === -1 ? objectCounts[i] : value)
+    );
     emit("update:suspending", ret);
   },
   { deep: true }
