@@ -6,15 +6,15 @@ div
         name="2d",
         :element="element",
         :time="time",
-        :loadings="childLoading",
-        :suspendings="childSuspending"
+        :loadings="loadings",
+        :suspendings="suspendings"
       )
   .d-none
     slot(
       name="3d",
       :time="time",
-      :loadings="childLoading",
-      :suspendings="childSuspending"
+      :loadings="loadings",
+      :suspendings="suspendings"
     )
 </template>
 
@@ -27,10 +27,8 @@ const props = withDefaults(
     renderer?: WebGLRenderer;
     camera?: Camera;
     time: number;
-    loading?: boolean;
-    suspending?: boolean;
-    objectCount?: number;
-    loadingCount?: number;
+    loading?: number;
+    suspending?: number;
     topLevel?: boolean;
   }>(),
   {
@@ -39,83 +37,50 @@ const props = withDefaults(
     renderer: useWebGLRenderer,
     camera: useDefaultCamera,
     time: 0,
-    loading: false,
-    suspending: false,
+    loading: 0,
+    suspending: 0,
     objectCount: 0,
-    loadingCount: 0,
   }
 );
 const emit = defineEmits<{
-  (e: "update:loading", val: boolean): void;
-  (e: "update:suspending", val: boolean): void;
+  (e: "update:loading", val: number): void;
+  (e: "update:suspending", val: number): void;
   (e: "update:objectCount", val: number): void;
-  (e: "update:loadingCount", val: number): void;
   (e: "update:time", val: number): void;
 }>();
 provide("element", toRef(props, "element"));
 provide("renderer", toRef(props, "renderer"));
 provide("camera", toRef(props, "camera"));
 provide("time", toRef(props, "time"));
-const childSuspending = reactive<boolean[]>([]);
-const childLoading = reactive<boolean[]>([]);
-const booleanOr = (input: boolean[]) => {
-  let ret = false;
-  for (const c of input) {
-    if (c) {
-      ret = true;
-      break;
-    }
-  }
-  return ret;
-};
-watch(
-  childSuspending,
-  () => {
-    const ret = booleanOr(childSuspending);
-    emit("update:suspending", ret);
-  },
-  { deep: true }
-);
 
-watch(
-  childLoading,
-  () => {
-    const ret = booleanOr(childLoading);
-    emit("update:loading", ret);
-  },
-  { deep: true }
-);
-
+const objectCounts = reactive<number[]>([]);
+const loadings = reactive<number[]>([]);
+const suspendings = reactive<number[]>([]);
 watch(toRef(props, "suspending"), (value) => {
   if (value) {
-    childSuspending.fill(true);
+    suspendings.fill(-1);
   }
 });
 watch(toRef(props, "loading"), (value) => {
   if (value) {
-    childLoading.fill(true);
+    loadings.fill(-1);
   }
 });
-
-const objectCounts = reactive<number[]>([]);
-const loadingCounts = reactive<number[]>([]);
 watch(
-  [objectCounts, childLoading],
+  objectCounts,
   () => {
     let ret = 0;
-    childLoading.forEach(() => ret++);
     objectCounts.forEach((value) => (ret += value));
     emit("update:objectCount", ret);
   },
   { deep: true }
 );
 watch(
-  [loadingCounts, childLoading],
+  loadings,
   () => {
     let ret = 0;
-    childLoading.forEach((value) => value && ret++);
-    loadingCounts.forEach((value) => (ret += value));
-    emit("update:loadingCount", ret);
+    loadings.forEach((value) => (ret += value));
+    emit("update:loading", ret);
   },
   { deep: true }
 );
@@ -124,14 +89,15 @@ if (props.topLevel) {
   let unsubscribe: () => void;
   let stopped = false;
   onMounted(() => {
-    childLoading.fill(true);
+    loadings.fill(-1);
     unsubscribe = useRouter().beforeEach((to, from, next) => {
-      childSuspending.fill(true);
+      suspendings.fill(-1);
       const unWatch = watch(
-        childSuspending,
+        suspendings,
         () => {
-          const ret = booleanOr(childSuspending);
-          if (!ret) {
+          let ret = 0;
+          loadings.forEach((value) => (ret += value));
+          if (ret === 0) {
             unWatch();
             next();
           }

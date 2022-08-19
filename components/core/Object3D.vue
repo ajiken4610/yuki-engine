@@ -8,8 +8,8 @@ const props = withDefaults(
     position?: Vector3;
     rotation?: Euler;
     scale?: Vector3;
-    loading?: boolean;
-    suspending?: boolean;
+    loading?: number;
+    suspending?: number;
     needsUpdate?: boolean;
   }>(),
   {
@@ -22,20 +22,20 @@ const renderer = inject<{ value: WebGLRenderer }>("renderer");
 const camera = inject<{ value: Camera }>("camera");
 const time = inject<{ value: number }>("time");
 const emit = defineEmits<{
-  (e: "update:suspending", val: boolean);
-  (e: "update:loading", val: boolean);
+  (e: "update:suspending", val: number);
+  (e: "update:loading", val: number);
   (e: "update:needsUpdate", val: boolean);
 }>();
-emit("update:suspending", false);
-emit("update:loading", false);
+emit("update:suspending", 0);
+emit("update:loading", 0);
 watch(toRef(props, "loading"), (val) => {
-  if (val) {
-    emit("update:loading", false);
+  if (val === -1) {
+    emit("update:loading", 0);
   }
 });
 watch(toRef(props, "suspending"), (val) => {
-  if (val) {
-    emit("update:suspending", false);
+  if (val === -1) {
+    emit("update:suspending", 0);
   }
 });
 
