@@ -17,7 +17,7 @@ div
         v-model:objectCount="objectCounts[0]",
         v-model:needsUpdate="needsUpdate"
       )
-    template(#2d) {{ loading }},{{ suspending }},{{ loading }},{{ suspending }}/{{ objectCount }}
+    template(#2d) {{ loading }},{{ suspending }}/{{ objectCount }}
       NuxtLink(to="/") to
 </template>
 

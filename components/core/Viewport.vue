@@ -98,7 +98,8 @@ if (props.topLevel) {
         suspendings,
         () => {
           let ret = 0;
-          loadings.forEach((value) => (ret += value));
+          suspendings.forEach((value) => (ret += value));
+          emit("update:suspending", ret);
           if (ret === 0) {
             unWatch();
             next();
