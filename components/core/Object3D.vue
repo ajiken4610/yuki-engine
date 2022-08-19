@@ -4,26 +4,23 @@ import { Camera, Euler, Scene, Vector3, WebGLRenderer } from "three";
 
 const props = withDefaults(
   defineProps<{
-    renderer?: { value: WebGLRenderer };
-    camera?: { value: Camera };
     scene: Scene;
     position?: Vector3;
     rotation?: Euler;
     scale?: Vector3;
-    time?: { value: number };
     loading?: boolean;
     suspending?: boolean;
     needsUpdate?: boolean;
   }>(),
   {
-    renderer: () => inject("renderer"),
-    camera: () => inject("camera"),
-    time: () => inject("time"),
     position: () => new Vector3(0, 0, 0),
     rotation: () => new Euler(0, 0, 0),
     scale: () => new Vector3(1, 1, 1),
   }
 );
+const renderer = inject<{ value: WebGLRenderer }>("renderer");
+const camera = inject<{ value: Camera }>("camera");
+const time = inject<{ value: number }>("time");
 const emit = defineEmits<{
   (e: "update:suspending", val: boolean);
   (e: "update:loading", val: boolean);
@@ -42,7 +39,7 @@ watch(toRef(props, "suspending"), (val) => {
   }
 });
 
-watch(toRef(props, "time"), () => {
+watch(time, () => {
   if (props.needsUpdate) {
     props.scene.position.set(
       props.position.x,
@@ -58,7 +55,7 @@ watch(toRef(props, "time"), () => {
     props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
     emit("update:needsUpdate", false);
   }
-  props.renderer.value.render(toRaw(props.scene), props.camera.value);
+  renderer.value.render(toRaw(props.scene), camera.value);
 });
 onMounted(() => {});
 onUnmounted(() => {});
