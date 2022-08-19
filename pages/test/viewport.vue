@@ -8,15 +8,17 @@ div
     v-model:time="time",
     :camera="camera"
   )
-    template(#3d="{ loadings, suspendings }")
+    template(#3d="{ loadings, suspendings, objectCounts }")
       CoreObjectsCube(
         :position="position",
         :rotation="rotation",
         v-model:loading="loadings[0]",
         v-model:suspending="suspendings[0]",
+        v-model:objectCount="objectCounts[0]",
         v-model:needsUpdate="needsUpdate"
       )
-    template(#2d) {{ loading }},{{ suspending }},{{ loading }}/{{ objectCount }}
+    template(#2d) {{ loading }},{{ suspending }},{{ loading }},{{ suspending }}/{{ objectCount }}
+      NuxtLink(to="/") to
 </template>
 
 <script setup lang="ts">

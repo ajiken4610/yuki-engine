@@ -7,14 +7,16 @@ div
         :element="element",
         :time="time",
         :loadings="loadings",
-        :suspendings="suspendings"
+        :suspendings="suspendings",
+        :objectCounts="objectCounts"
       )
   .d-none
     slot(
       name="3d",
       :time="time",
       :loadings="loadings",
-      :suspendings="suspendings"
+      :suspendings="suspendings",
+      :objectCounts="objectCounts"
     )
 </template>
 

@@ -1,7 +1,7 @@
 <template lang="pug">
 CoreObject3D(
   v-bind="$props",
-  v-on="useUpdateExtender($emit, ['loading', 'suspending', 'needsUpdate'])",
+  v-on="useUpdateExtender($emit, ['loading', 'suspending', 'objectCount', 'needsUpdate'])",
   :scene="scene"
 )
 </template>
@@ -27,6 +27,7 @@ const props = withDefaults(
 defineEmits<{
   (e: "update:suspending", val: number);
   (e: "update:loading", val: number);
+  (e: "update:objectCount", val: number);
   (e: "update:needsUpdate", val: boolean);
 }>();
 const o = useGLObjects() as {
