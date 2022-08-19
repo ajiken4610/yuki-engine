@@ -55,22 +55,27 @@ const injectedScale =
 const injectedNeedsUpdate = inject("needsUpdate", null) || ref(false);
 const updateMatrix = () => {
   props.scene.position.set(
-    props.position.x,
-    props.position.y,
-    props.position.z
+    props.position.x + injectedPosition.value.x,
+    props.position.y + injectedPosition.value.y,
+    props.position.z + injectedPosition.value.z
   );
   props.scene.rotation.set(
-    props.rotation.x,
-    props.rotation.y,
-    props.rotation.z,
+    props.rotation.x + injectedRotation.value.x,
+    props.rotation.y + injectedRotation.value.y,
+    props.rotation.z + injectedRotation.value.z,
     props.rotation.order
   );
-  props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
+  props.scene.scale.set(
+    props.scale.x * injectedScale.value.x,
+    props.scale.y * injectedScale.value.y,
+    props.scale.z * injectedScale.value.z
+  );
   emit("update:needsUpdate", false);
+  injectedNeedsUpdate.value = false;
 };
 
 watch(time, () => {
-  if (props.needsUpdate) {
+  if (props.needsUpdate || injectedNeedsUpdate.value) {
     updateMatrix();
   }
   renderer.value.render(toRaw(props.scene), camera.value);
