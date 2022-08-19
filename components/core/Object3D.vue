@@ -4,13 +4,13 @@ import { Camera, Euler, Scene, Vector3, WebGLRenderer } from "three";
 
 const props = withDefaults(
   defineProps<{
-    renderer?: WebGLRenderer;
-    camera?: Camera;
+    renderer?: { value: WebGLRenderer };
+    camera?: { value: Camera };
     scene: Scene;
     position?: Vector3;
     rotation?: Euler;
     scale?: Vector3;
-    time?: number | { value: number };
+    time?: { value: number };
     loading?: boolean;
     suspending?: boolean;
     needsUpdate?: boolean;
@@ -18,7 +18,7 @@ const props = withDefaults(
   {
     renderer: () => inject("renderer"),
     camera: () => inject("camera"),
-    time: () => inject("time", 0),
+    time: () => inject("time"),
     position: () => new Vector3(0, 0, 0),
     rotation: () => new Euler(0, 0, 0),
     scale: () => new Vector3(1, 1, 1),
@@ -58,7 +58,7 @@ watch(toRef(props, "time"), () => {
     props.scene.scale.set(props.scale.x, props.scale.y, props.scale.z);
     emit("update:needsUpdate", false);
   }
-  unref(props.renderer).render(toRaw(unref(props.scene)), unref(props.camera));
+  props.renderer.value.render(toRaw(props.scene), props.camera.value);
 });
 onMounted(() => {});
 onUnmounted(() => {});
