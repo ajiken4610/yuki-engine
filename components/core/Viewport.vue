@@ -12,8 +12,6 @@ div
   .d-none
     slot(
       name="3d",
-      :renderer="renderer",
-      :camera="camera",
       :time="time",
       :loadings="childLoading",
       :suspendings="childSuspending"
