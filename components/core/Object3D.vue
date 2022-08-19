@@ -52,7 +52,7 @@ const injectedRotation =
   inject<{ value: Euler }>("rotation", null) || ref(new Euler(0, 0, 0));
 const injectedScale =
   inject<{ value: Vector3 }>("scale", null) || ref(new Vector3(1, 1, 1));
-const injectedNeedsUpdate = inject("needsUpdate", ref(false));
+const injectedNeedsUpdate = inject("needsUpdate", null) || ref(false);
 const updateMatrix = () => {
   props.scene.position.set(
     props.position.x,
